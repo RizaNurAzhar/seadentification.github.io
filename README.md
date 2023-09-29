@@ -1,5 +1,4 @@
 # mangjajing.github.io
-<!DOCTYPE html>
 <html>
 <head>
     <title>Seaweed Species Identifier</title>
