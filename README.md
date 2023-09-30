@@ -1,4 +1,4 @@
-# mangjajing.github.io
+# Seadentification.github.io
 <html>
 <head>
     <title>Seaweed Species Identifier</title>
