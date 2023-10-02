@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Seaweed Species Identifier</title>
+    <title>Identifikasi Rumput Laut Riza</title>
     <style>
         body {
             text-align: center;
@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-    <h1>Seaweed Species Identifier</h1>
+    <h1>Identifikasi Rumput Laut</h1>
 
     <!-- Start button -->
     <button type="button" onclick="init()">Start</button>
