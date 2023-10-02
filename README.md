@@ -1,4 +1,3 @@
-# seadentification.github.io
 <html>
 <head>
     <title>Seaweed Species Identifier</title>
