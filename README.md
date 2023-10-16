@@ -1,11 +1,12 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Identifikasi Rumput Laut Riza</title>
+    <title>Seaweed Species Identifier</title>
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
         }
@@ -47,27 +48,34 @@
     </style>
 </head>
 <body>
-    <h1>Identifikasi Rumput Laut</h1>
+    <h1>Identifikasi Spesies Rumput Laut</h1>
+    <h2>Dekatkan kamera hingga bagian rumput laut terlihat jelas</h2>
+    <h3>Tekan tombol fiksasi lalu tahan kamera selama 1 menit untuk mendapatkan hasil tetap</h3>
 
-    <!-- Start button -->
-    <button type="button" onclick="init()">Start</button>
+    <!-- Tombol mulai -->
+    <button type="button" onclick="init()">Mulai</button>
 
-    <!-- Webcam and highest prediction display area -->
+    <!-- tombol kesimpulan selama 1 menit -->
+    <button type="button" onclick="calculateHighestProbability()">Fiksasi Identifikasi</button>
+
+    <!-- bagian pengaturan webcam -->
     <div id="webcam-container">
         <video autoplay playsinline muted id="webcam"></video>
     </div>
     <div id="highest-prediction"></div>
 
-    <!-- TensorFlow.js and Teachable Machine scripts -->
+    <!-- Scriptnya teachable machine -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
-    <!-- Your JavaScript code (modified with getUserMedia) -->
+    <!-- kode javascript (modified with getUserMedia and calculateHighestProbability) -->
     <script type="text/javascript">
-        const URL = "https://teachablemachine.withgoogle.com/models/dZkZH7W2Q/";
+        const URL = "https://teachablemachine.withgoogle.com/models/Tl7cLe-JU/";
         let model, webcam, highestPrediction;
         let highestClass = ""; // Declare highestClass here
-
+        let highestProbabilityInOneMinute = 0;
+        let calculating = false;
+        
         async function init() {
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
@@ -114,7 +122,22 @@
 
                 const highestPredictionText = `Highest Probability: ${highestClass} (${(highestProbability * 100).toFixed(2)}%)`;
                 highestPrediction.innerHTML = highestPredictionText;
+
+                if (calculating) {
+                    if (highestProbability > highestProbabilityInOneMinute) {
+                        highestProbabilityInOneMinute = highestProbability;
+                    }
+                }
             }
+        }
+
+        function calculateHighestProbability() {
+            calculating = true;
+            setTimeout(() => {
+                calculating = false;
+                alert(`Highest Probability in 1 minute: ${highestClass} (${(highestProbabilityInOneMinute * 100).toFixed(2)}%)`);
+                highestProbabilityInOneMinute = 0;
+            }, 30000); // waktunya dalam milisecond
         }
     </script>
 </body>
