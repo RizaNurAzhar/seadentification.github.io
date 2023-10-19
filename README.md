@@ -38,7 +38,7 @@
 <body>
     <h1>Identifikasi Spesies Rumput Laut</h1>
     <h2>Dekatkan kamera hingga bagian rumput laut terlihat jelas</h2>
-    <h3>Tekan tombol fiksasi lalu tahan kamera selama 1 menit untuk mendapatkan hasil tetap</h3>
+    <h3>Tekan tombol fiksasi lalu tahan kamera selama 15 detik untuk mendapatkan hasil tetap</h3>
     <!-- Tombol mulai -->
     <button type="button" onclick="init()">Mulai</button>
     <!-- tombol kesimpulan selama 1 menit -->
