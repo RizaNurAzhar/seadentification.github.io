@@ -52,11 +52,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <!-- kode javascript (modified with getUserMedia and calculateHighestProbability) -->
-    <script type="text/javascript">
+   <script type="text/javascript">
         const URL = "https://teachablemachine.withgoogle.com/models/Tl7cLe-JU/";
         let model, webcam, highestPrediction;
         let highestClass = ""; // Declare highestClass here
-        let highestProbabilityInOneMinute = 0;
+        let highestProbabilityInFifteenSecond = 0;
         let calculating = false;
         async function init() {
             const modelURL = URL + "model.json";
@@ -96,8 +96,8 @@
                 const highestPredictionText = `Highest Probability: ${highestClass} (${(highestProbability * 100).toFixed(2)}%)`;
                 highestPrediction.innerHTML = highestPredictionText;
                 if (calculating) {
-                    if (highestProbability > highestProbabilityInOneMinute) {
-                        highestProbabilityInOneMinute = highestProbability;
+                    if (highestProbability > highestProbabilityInFifteenSecond) {
+                        highestProbabilityInFifteenSecond = highestProbability;
                     }
                 }
             }
@@ -106,9 +106,9 @@
             calculating = true;
             setTimeout(() => {
                 calculating = false;
-                alert(`Highest Probability in 1 minute: ${highestClass} (${(highestProbabilityInOneMinute * 100).toFixed(2)}%)`);
-                highestProbabilityInOneMinute = 0;
-            }, 30000); // waktunya dalam milisecond
+                alert(`Highest Probability in 15 second: ${highestClass} (${(highestProbabilityInFifteenSecond * 100).toFixed(2)}%)`);
+                highestProbabilityInFifteenSecond = 0;
+            }, 15000); // waktunya dalam milisecond
         }
     </script>
 </body>
