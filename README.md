@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
     <style>
-        body {
+         body {
             text-align: center;
             font-family: Arial, sans-serif;
             background-color: #ffffff;
@@ -39,53 +40,40 @@
     <h1>Identifikasi Spesies Rumput Laut</h1>
     <h2>Dekatkan kamera hingga bagian rumput laut terlihat jelas</h2>
     <h3>Tekan tombol fiksasi lalu tahan kamera selama 15 detik untuk mendapatkan hasil tetap</h3>
-    <!-- Tombol mulai -->
     <button type="button" onclick="init()">Mulai</button>
-    <!-- tombol kesimpulan selama 1 menit -->
     <button type="button" onclick="calculateHighestProbability()">Fiksasi Identifikasi</button>
-    <!-- bagian pengaturan webcam -->
+    <button type="button" onclick="flipCamera()">Ganti Kamera</button>
     <div id="webcam-container">
-        <video id="webcam" autoplay playsinline muted></video>
-        <button id="flip-button">Flip Camera</button>
+        <video autoplay playsinline muted id="webcam"></video>
     </div>
     <div id="highest-prediction"></div>
-    <!-- Scriptnya teachable machine -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <!-- kode javascript (modified with getUserMedia and calculateHighestProbability) -->
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
-        const flipButton = document.getElementById('flip-button');
-        let facingMode = "user";
-        flipButton.addEventListener('click', () => {
-            if (facingMode === "user") facingMode = "environment";
-            else facingMode = "user";
-            webcam.srcObject.getVideoTracks()[0].applyConstraints({
-                facingMode: facingMode
-            });
-        });
-
         const URL = "https://teachablemachine.withgoogle.com/models/Tl7cLe-JU/";
         let model, webcam, highestPrediction;
-        let highestClass = ""; // Declare highestClass here
+        let highestClass = "";
         let highestProbabilityInFifteenSecond = 0;
         let calculating = false;
+        let currentCamera = 0;
+        let videoDevices = [];
+
         async function init() {
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
             model = await tmImage.load(modelURL, metadataURL);
-            // Use getUserMedia to access the webcam
-            const constraints = {
-                video: {
-                    facingMode: facingMode
-                }
-            };
+
+            videoDevices = await navigator.mediaDevices.enumerateDevices();
+            const constraints = { video: true };
+
             try {
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                webcam = document.getElementById("webcam");
-                webcam.srcObject = stream;
-                webcam.play();
+                const videoElement = document.getElementById("webcam");
+                videoElement.srcObject = stream;
+                videoElement.play();
+                webcam = videoElement;
                 window.requestAnimationFrame(loop);
+                document.getElementById("webcam-container").appendChild(videoElement);
                 highestPrediction = document.getElementById("highest-prediction");
             } catch (error) {
                 console.error("Error accessing webcam:", error);
@@ -98,6 +86,7 @@
                 window.requestAnimationFrame(loop);
             }
         }
+
         async function predict() {
             if (webcam) {
                 const prediction = await model.predict(webcam);
@@ -105,7 +94,7 @@
                 for (let i = 0; i < prediction.length; i++) {
                     if (prediction[i].probability > highestProbability) {
                         highestProbability = prediction[i].probability;
-                        highestClass = prediction[i].className; // Assign highestClass here
+                        highestClass = prediction[i].className;
                     }
                 }
                 const highestPredictionText = `Highest Probability: ${highestClass} (${(highestProbability * 100).toFixed(2)}%)`;
@@ -117,13 +106,30 @@
                 }
             }
         }
+
         function calculateHighestProbability() {
             calculating = true;
             setTimeout(() => {
                 calculating = false;
                 alert(`Highest Probability in 15 second: ${highestClass} (${(highestProbabilityInFifteenSecond * 100).toFixed(2)}%)`);
                 highestProbabilityInFifteenSecond = 0;
-            }, 15000); // waktunya dalam milisecond
+            }, 15000);
+        }
+
+        async function flipCamera() {
+            if (webcam) {
+                currentCamera = (currentCamera + 1) % videoDevices.length;
+                const constraints = {
+                    video: { deviceId: { exact: videoDevices[currentCamera].deviceId } }
+                };
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    webcam.srcObject = stream;
+                    webcam.play();
+                } catch (error) {
+                    console.error("Error flipping camera:", error);
+                }
+            }
         }
     </script>
 </body>
