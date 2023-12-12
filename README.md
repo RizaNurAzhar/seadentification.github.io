@@ -45,14 +45,26 @@
     <button type="button" onclick="calculateHighestProbability()">Fiksasi Identifikasi</button>
     <!-- bagian pengaturan webcam -->
     <div id="webcam-container">
-        <video autoplay playsinline muted id="webcam"></video>
+        <video id="webcam" autoplay playsinline muted></video>
+        <button id="flip-button">Flip Camera</button>
     </div>
     <div id="highest-prediction"></div>
     <!-- Scriptnya teachable machine -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <!-- kode javascript (modified with getUserMedia and calculateHighestProbability) -->
-   <script type="text/javascript">
+    <script type="text/javascript">
+        const flipButton = document.getElementById('flip-button');
+        let facingMode = "user";
+        flipButton.addEventListener('click', () => {
+            if (facingMode === "user") facingMode = "environment";
+            else facingMode = "user";
+            webcam.srcObject.getVideoTracks()[0].applyConstraints({
+                facingMode: facingMode
+            });
+        });
+
         const URL = "https://teachablemachine.withgoogle.com/models/Tl7cLe-JU/";
         let model, webcam, highestPrediction;
         let highestClass = ""; // Declare highestClass here
@@ -63,20 +75,23 @@
             const metadataURL = URL + "metadata.json";
             model = await tmImage.load(modelURL, metadataURL);
             // Use getUserMedia to access the webcam
-            const constraints = { video: true };
+            const constraints = {
+                video: {
+                    facingMode: facingMode
+                }
+            };
             try {
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                const videoElement = document.getElementById("webcam");
-                videoElement.srcObject = stream;
-                videoElement.play();
-                webcam = videoElement;
+                webcam = document.getElementById("webcam");
+                webcam.srcObject = stream;
+                webcam.play();
                 window.requestAnimationFrame(loop);
-                document.getElementById("webcam-container").appendChild(videoElement);
                 highestPrediction = document.getElementById("highest-prediction");
             } catch (error) {
                 console.error("Error accessing webcam:", error);
             }
         }
+
         async function loop() {
             if (webcam) {
                 await predict();
