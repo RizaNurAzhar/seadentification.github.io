@@ -50,7 +50,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
-        const URL = "https://teachablemachine.withgoogle.com/models/Tl7cLe-JU/";
+        const URL = "https://teachablemachine.withgoogle.com/models/ncWRi_xq6/";
         let model, webcam, highestPrediction;
         let highestClass = "";
         let highestProbabilityInFifteenSecond = 0;
